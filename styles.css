@@ -156,11 +156,53 @@ nav {
     align-items: center;
 }
 
+/* Logo Styles */
 .logo {
     font-size: 1.2rem;
     font-weight: 500;
     color: var(--light-color);
     letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+}
+
+.logo-svg {
+    height: 30px;
+    width: auto;
+    margin-right: 12px;
+}
+
+.logo-svg path {
+    stroke: var(--light-color);
+    transition: stroke 0.3s ease;
+}
+
+.logo:hover .logo-svg path {
+    stroke: var(--accent-color);
+}
+
+/* Animated logo paths */
+.logo-svg .m-wave {
+    animation: wave-animation 12s ease-in-out infinite;
+}
+
+.logo-svg .a-wave {
+    animation: wave-animation 12s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+.logo-svg .i-wave {
+    animation: wave-animation 12s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+@keyframes wave-animation {
+    0%, 100% {
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dashoffset: 5;
+    }
 }
 
 .nav-links {
