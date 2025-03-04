@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-100 Game | Merlin AI</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Game-specific styles */
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .game-title {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .game-description {
+            margin-bottom: 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--mid-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .game-cell.completed {
+            background-color: #2ecc71;
+            color: #111;
+        }
+        
+        .game-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-input {
+            padding: 1rem;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            font-size: 1.2rem;
+            background-color: var(--mid-color);
+            border: 2px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background-color: var(--mid-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .game-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .stat-box {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <svg class="logo-svg" width="40" height="30" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- M wave (top) - two full cosine waves: trough-peak-trough-peak-trough -->
+                        <path class="m-wave" d="M10,40 
+                                              C17.5,30 25,30 32.5,40 
+                                              C40,50 47.5,50 55,40 
+                                              C62.5,30 70,30 77.5,40 
+                                              C85,50 92.5,50 100,40 
+                                              C107.5,30 115,30 122.5,40 
+                                              C130,50 137.5,50 145,40 
+                                              C152.5,30 160,30 167.5,40 
+                                              C175,50 182.5,50 190,40" 
+                              fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-dasharray="180" />
+                        
+                        <!-- A wave (middle) - one inverted cosine wave: trough-peak-trough -->
+                        <path class="a-wave" d="M100,60 
+                                              C112.5,50 125,50 137.5,60 
+                                              C150,70 162.5,70 175,60" 
+                              fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="90" />
+                        
+                        <!-- I wave (bottom) - half cosine wave: peak-trough -->
+                        <path class="i-wave" d="M137.5,80 
+                                              C150,70 162.5,70 175,80" 
+                              fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="45" />
+                    </svg>
+                    MERLIN AI
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#projects">Projects</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="games.html">Games</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="games-page">
+            <div class="container">
+                <h1>1-100</h1>
+                
+                <div class="game-container">
+                    <p class="game-description">Find all numbers from 1 to 100 as quickly as you can! Type any number in the input field or click on a cell. The game will always accept the lowest available number first, so you don't need to go in order.</p>
+                    
+                    <div class="game-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Time</div>
+                            <div class="stat-value" id="time-display">00:00</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Next Number</div>
+                            <div class="stat-value" id="current-number">1</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Best Time</div>
+                            <div class="stat-value" id="best-time">--:--</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-input-container">
+                        <input type="text" id="game-input" class="game-input" placeholder="Type any number..." autocomplete="off">
+                    </div>
+                    
+                    <div class="game-grid" id="game-grid">
+                        <!-- Grid cells will be generated by JavaScript -->
+                    </div>
+                    
+                    <div class="game-controls">
+                        <button id="reset-button" class="btn btn-primary">Reset Game</button>
+                        <a href="games.html" class="btn">Back to Games</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Merlin AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameGrid = document.getElementById('game-grid');
+            const gameInput = document.getElementById('game-input');
+            const currentNumberDisplay = document.getElementById('current-number');
+            const timeDisplay = document.getElementById('time-display');
+            const bestTimeDisplay = document.getElementById('best-time');
+            const resetButton = document.getElementById('reset-button');
+            
+            let currentNumber = 1;
+            let startTime = null;
+            let timerInterval = null;
+            let bestTime = localStorage.getItem('bestTime') || null;
+            let completedNumbers = new Set();
+            
+            if (bestTime) {
+                bestTimeDisplay.textContent = formatTime(bestTime);
+            }
+            
+            // Auto-focus the input field when the page loads
+            gameInput.focus();
+            
+            // Create the grid cells
+            for (let i = 1; i <= 100; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'game-cell';
+                cell.textContent = i;
+                cell.id = `cell-${i}`;
+                
+                // Add click event to each cell
+                cell.addEventListener('click', () => {
+                    // Mark the number as completed if valid
+                    if (!completedNumbers.has(i)) {
+                        markNumberAsCompleted(i);
+                        
+                        // If this was the current number, find the next one
+                        if (i === currentNumber) {
+                            findNextAvailableNumber();
+                        }
+                    }
+                    
+                    // Focus the input field after clicking a cell
+                    gameInput.focus();
+                });
+                
+                gameGrid.appendChild(cell);
+            }
+            
+            // Handle key events for the input field
+            gameInput.addEventListener('keydown', (e) => {
+                // Start the timer on first keypress
+                if (!startTime) {
+                    startTime = Date.now();
+                    timerInterval = setInterval(updateTimer, 100);
+                }
+                
+                // If Enter key is pressed, process the input
+                if (e.key === 'Enter') {
+                    processInput();
+                    e.preventDefault();
+                }
+            });
+            
+            // Process input on input change
+            gameInput.addEventListener('input', () => {
+                // Start the timer on first input
+                if (!startTime) {
+                    startTime = Date.now();
+                    timerInterval = setInterval(updateTimer, 100);
+                }
+                
+                processInput();
+            });
+            
+            // Process the current input value
+            function processInput() {
+                const input = gameInput.value.trim();
+                const inputNumber = parseInt(input);
+                
+                // Check if the input is a valid number
+                if (!isNaN(inputNumber) && inputNumber >= 1 && inputNumber <= 100) {
+                    // If the number hasn't been completed yet
+                    if (!completedNumbers.has(inputNumber)) {
+                        // Mark the number as completed
+                        markNumberAsCompleted(inputNumber);
+                        
+                        // If this was the current number, find the next one
+                        if (inputNumber === currentNumber) {
+                            findNextAvailableNumber();
+                        }
+                        
+                        // Clear the input field
+                        gameInput.value = '';
+                    }
+                }
+            }
+            
+            function markNumberAsCompleted(number) {
+                // Mark the cell as completed
+                const cell = document.getElementById(`cell-${number}`);
+                cell.classList.add('completed');
+                
+                // Add to completed set
+                completedNumbers.add(number);
+                
+                // Check if the game is complete
+                if (completedNumbers.size === 100) {
+                    finishGame();
+                }
+            }
+            
+            function findNextAvailableNumber() {
+                // Find the next number that hasn't been completed
+                while (completedNumbers.has(currentNumber) && currentNumber <= 100) {
+                    currentNumber++;
+                }
+                
+                // Update the display
+                currentNumberDisplay.textContent = currentNumber <= 100 ? currentNumber : 'Done!';
+            }
+            
+            // Reset the game
+            resetButton.addEventListener('click', resetGame);
+            
+            function updateTimer() {
+                if (!startTime) return;
+                
+                const elapsedTime = Date.now() - startTime;
+                timeDisplay.textContent = formatTime(elapsedTime);
+            }
+            
+            function formatTime(ms) {
+                const totalSeconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function finishGame() {
+                clearInterval(timerInterval);
+                
+                const finalTime = Date.now() - startTime;
+                
+                // Check if this is a new best time
+                if (!bestTime || finalTime < bestTime) {
+                    bestTime = finalTime;
+                    localStorage.setItem('bestTime', bestTime);
+                    bestTimeDisplay.textContent = formatTime(bestTime);
+                }
+                
+                // Disable the input
+                gameInput.disabled = true;
+                
+                // Show completion message
+                setTimeout(() => {
+                    alert(`Congratulations! You completed the challenge in ${formatTime(finalTime)}!`);
+                }, 100);
+            }
+            
+            function resetGame() {
+                // Reset the timer
+                clearInterval(timerInterval);
+                startTime = null;
+                timeDisplay.textContent = '00:00';
+                
+                // Reset the current number and completed set
+                currentNumber = 1;
+                completedNumbers.clear();
+                currentNumberDisplay.textContent = currentNumber;
+                
+                // Clear the input
+                gameInput.value = '';
+                gameInput.disabled = false;
+                gameInput.focus();
+                
+                // Reset all cells
+                document.querySelectorAll('.game-cell').forEach(cell => {
+                    cell.classList.remove('completed');
+                });
+            }
+            
+            // Add event listener to refocus input when clicking anywhere on the page
+            document.addEventListener('click', (e) => {
+                // Only focus if not clicking on a button or cell
+                if (!e.target.closest('button') && !e.target.closest('.game-cell')) {
+                    gameInput.focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

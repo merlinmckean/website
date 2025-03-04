@@ -159,4 +159,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Add spotlight effect
+    document.addEventListener('mousemove', (e) => {
+        // Update CSS variables for the spotlight effect
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        
+        document.documentElement.style.setProperty('--x', `${x}%`);
+        document.documentElement.style.setProperty('--y', `${y}%`);
+    });
+
+    // Remove the existing shimmer cursor function and replace with a blue spotlight
+    function initCursorSpotlight() {
+        // Create a spotlight element
+        const spotlight = document.createElement('div');
+        spotlight.className = 'cursor-spotlight';
+        document.body.appendChild(spotlight);
+
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            spotlight.style.left = `${e.clientX}px`;
+            spotlight.style.top = `${e.clientY}px`;
+            
+            // Make sure the spotlight is visible
+            spotlight.style.opacity = '1';
+        });
+
+        // Hide spotlight when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            spotlight.style.opacity = '0';
+        });
+
+        // Add CSS for spotlight
+        const style = document.createElement('style');
+        style.textContent = `
+            .cursor-spotlight {
+                position: fixed;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(41, 128, 255, 0.3) 0%, rgba(41, 128, 255, 0.1) 40%, rgba(41, 128, 255, 0) 70%);
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+                z-index: 9999;
+                transition: opacity 0.3s ease;
+                mix-blend-mode: screen;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Initialize cursor spotlight instead of shimmer
+    initCursorSpotlight();
 });
