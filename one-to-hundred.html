@@ -11,117 +11,331 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Game-specific styles */
-        .game-container {
-            max-width: 900px;
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .games-page {
+            height: calc(100vh - 50px);
+            padding: 0;
+            overflow-y: auto; /* Allow vertical scrolling if needed */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem 0;
+            padding: 0 1rem;
+            height: 100%;
         }
-        
-        .game-title {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
-        .game-description {
-            margin-bottom: 2rem;
-            text-align: center;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .game-cell {
-            aspect-ratio: 1;
+
+        .game-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--mid-color);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.2s ease;
-            cursor: pointer;
+            height: 100%;
+            padding-top: 1.5rem;
         }
         
-        .game-cell.completed {
-            background-color: #2ecc71;
-            color: #111;
+        .game-grid-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            padding-right: 1rem;
         }
         
-        .game-input-container {
+        .game-info {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .game-input {
-            padding: 1rem;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
-            font-size: 1.2rem;
-            background-color: var(--mid-color);
-            border: 2px solid var(--accent-color);
-            border-radius: var(--border-radius);
-            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            min-height: 100px;
         }
         
         .game-stats {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            width: 100%;
         }
         
         .stat-box {
-            background-color: var(--mid-color);
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: var(--border-radius);
             text-align: center;
-            min-width: 120px;
+            flex: 1;
+            max-width: 120px;
+            background-color: var(--mid-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
         }
         
         .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .game-input-container {
+            margin: 0.75rem 0;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .game-input {
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 220px;
+            text-align: center;
+            font-size: 1rem;
+            border: 2px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            background-color: var(--dark-color);
+            color: var(--text-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .game-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+        
+        .game-grid-container {
+            flex: 1;
+            background: var(--dark-color);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-height: calc(100vh - 350px); /* Reduce grid height to prevent top cutoff */
+            min-height: 400px; /* Ensure minimum height for grid */
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 4px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+        
+        .game-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--mid-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            user-select: none;
+            min-height: 0; /* Allow cells to shrink if needed */
+        }
+        
+        .game-cell.completed {
+            background-color: #2ecc71;
+            color: #111;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
         }
         
         .game-controls {
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
             display: flex;
             justify-content: center;
             gap: 1rem;
         }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover-color, #3498db);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard {
+            flex: 1;
+            background-color: var(--mid-color);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .leaderboard h2 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.2rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
         
-        @media (max-width: 768px) {
-            .game-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-            
-            .game-stats {
+        .leaderboard-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+        
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background-color: var(--dark-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard-rank {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            width: 25px;
+        }
+
+        .leaderboard-name {
+            flex-grow: 1;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .leaderboard-time {
+            font-family: monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .name-input-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--mid-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            z-index: 1000;
+            text-align: center;
+            display: none;
+        }
+
+        .name-input-container.active {
+            display: block;
+        }
+
+        .name-input-container input {
+            margin: 1rem 0;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        footer {
+            display: none;
+        }
+
+        @media (max-width: 968px) {
+            .game-container {
                 flex-direction: column;
-                align-items: center;
-                gap: 1rem;
+                height: auto;
             }
-            
-            .stat-box {
-                width: 100%;
-                max-width: 300px;
+
+            .game-grid-section {
+                padding-right: 0;
+                margin-bottom: 1rem;
             }
+
+            .game-grid-container {
+                aspect-ratio: 1;
+            }
+
+            .leaderboard {
+                max-width: 100%;
+                height: 300px;
+            }
+        }
+
+        header {
+            height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        header .container {
+            height: 100%;
+            padding: 0 1rem;
+        }
+
+        nav {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .logo-svg {
+            width: 30px;
+            height: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-left: auto;
+        }
+
+        .nav-links li {
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -174,37 +388,46 @@
     <main>
         <section class="games-page">
             <div class="container">
-                <h1>1-100</h1>
-                
                 <div class="game-container">
-                    <p class="game-description">Find all numbers from 1 to 100 as quickly as you can! Type any number in the input field or click on a cell. The game will always accept the lowest available number first, so you don't need to go in order.</p>
-                    
-                    <div class="game-stats">
-                        <div class="stat-box">
-                            <div class="stat-label">Time</div>
-                            <div class="stat-value" id="time-display">00:00</div>
+                    <div class="game-grid-section">
+                        <div class="game-info">
+                            <div class="game-stats">
+                                <div class="stat-box">
+                                    <div class="stat-label">Time</div>
+                                    <div class="stat-value" id="time-display">00:00</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Next Number</div>
+                                    <div class="stat-value" id="current-number">1</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Best Time</div>
+                                    <div class="stat-value" id="best-time">--:--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="game-input-container">
+                                <input type="text" id="game-input" class="game-input" placeholder="Type any number..." autocomplete="off">
+                            </div>
                         </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Next Number</div>
-                            <div class="stat-value" id="current-number">1</div>
+
+                        <div class="game-grid-container">
+                            <div class="game-grid" id="game-grid">
+                                <!-- Grid cells will be generated by JavaScript -->
+                            </div>
                         </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Best Time</div>
-                            <div class="stat-value" id="best-time">--:--</div>
+                        
+                        <div class="game-controls">
+                            <button id="reset-button" class="btn btn-primary">Reset Game</button>
+                            <a href="games.html" class="btn">Back to Games</a>
                         </div>
                     </div>
-                    
-                    <div class="game-input-container">
-                        <input type="text" id="game-input" class="game-input" placeholder="Type any number..." autocomplete="off">
-                    </div>
-                    
-                    <div class="game-grid" id="game-grid">
-                        <!-- Grid cells will be generated by JavaScript -->
-                    </div>
-                    
-                    <div class="game-controls">
-                        <button id="reset-button" class="btn btn-primary">Reset Game</button>
-                        <a href="games.html" class="btn">Back to Games</a>
+
+                    <div class="leaderboard">
+                        <h2>Leaderboard</h2>
+                        <div class="leaderboard-list" id="leaderboard-list">
+                            <!-- Leaderboard entries will be added here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -217,6 +440,14 @@
         </div>
     </footer>
 
+    <div class="overlay" id="overlay"></div>
+    <div class="name-input-container" id="name-input-container">
+        <h3>New High Score!</h3>
+        <p>Enter your name to save your score:</p>
+        <input type="text" id="player-name" placeholder="Your name" maxlength="20">
+        <button id="save-score" class="btn btn-primary">Save Score</button>
+    </div>
+
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -226,12 +457,20 @@
             const timeDisplay = document.getElementById('time-display');
             const bestTimeDisplay = document.getElementById('best-time');
             const resetButton = document.getElementById('reset-button');
+            const nameInputContainer = document.getElementById('name-input-container');
+            const overlay = document.getElementById('overlay');
+            const playerNameInput = document.getElementById('player-name');
+            const saveScoreButton = document.getElementById('save-score');
+            const leaderboardList = document.getElementById('leaderboard-list');
             
             let currentNumber = 1;
             let startTime = null;
             let timerInterval = null;
             let bestTime = localStorage.getItem('bestTime') || null;
             let completedNumbers = new Set();
+            
+            // Load leaderboard from localStorage
+            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
             
             if (bestTime) {
                 bestTimeDisplay.textContent = formatTime(bestTime);
@@ -247,21 +486,7 @@
                 cell.textContent = i;
                 cell.id = `cell-${i}`;
                 
-                // Add click event to each cell
-                cell.addEventListener('click', () => {
-                    // Mark the number as completed if valid
-                    if (!completedNumbers.has(i)) {
-                        markNumberAsCompleted(i);
-                        
-                        // If this was the current number, find the next one
-                        if (i === currentNumber) {
-                            findNextAvailableNumber();
-                        }
-                    }
-                    
-                    // Focus the input field after clicking a cell
-                    gameInput.focus();
-                });
+                // No click event - numbers can only be activated by typing
                 
                 gameGrid.appendChild(cell);
             }
@@ -371,10 +596,45 @@
                 // Disable the input
                 gameInput.disabled = true;
                 
-                // Show completion message
-                setTimeout(() => {
-                    alert(`Congratulations! You completed the challenge in ${formatTime(finalTime)}!`);
-                }, 100);
+                // Check if the score qualifies for the leaderboard
+                const shouldAddToLeaderboard = leaderboard.length < 10 || finalTime < leaderboard[9].time;
+                
+                if (shouldAddToLeaderboard) {
+                    // Show name input
+                    overlay.classList.add('active');
+                    nameInputContainer.classList.add('active');
+                    playerNameInput.value = '';
+                    playerNameInput.focus();
+                    
+                    // Handle save button click
+                    const saveHandler = () => {
+                        const playerName = playerNameInput.value.trim();
+                        if (playerName) {
+                            // Add to leaderboard
+                            leaderboard.push({
+                                name: playerName,
+                                time: finalTime
+                            });
+                            
+                            // Update display
+                            updateLeaderboard();
+                            
+                            // Hide input
+                            overlay.classList.remove('active');
+                            nameInputContainer.classList.remove('active');
+                            
+                            // Remove event listener
+                            saveScoreButton.removeEventListener('click', saveHandler);
+                        }
+                    };
+                    
+                    saveScoreButton.addEventListener('click', saveHandler);
+                } else {
+                    // Just show completion message
+                    setTimeout(() => {
+                        alert(`Congratulations! You completed the challenge in ${formatTime(finalTime)}!`);
+                    }, 100);
+                }
             }
             
             function resetGame() {
@@ -397,6 +657,10 @@
                 document.querySelectorAll('.game-cell').forEach(cell => {
                     cell.classList.remove('completed');
                 });
+                
+                // Hide name input if visible
+                overlay.classList.remove('active');
+                nameInputContainer.classList.remove('active');
             }
             
             // Add event listener to refocus input when clicking anywhere on the page
@@ -404,6 +668,42 @@
                 // Only focus if not clicking on a button or cell
                 if (!e.target.closest('button') && !e.target.closest('.game-cell')) {
                     gameInput.focus();
+                }
+            });
+
+            // Update leaderboard display
+            function updateLeaderboard() {
+                leaderboardList.innerHTML = '';
+                
+                // Sort by time (ascending)
+                leaderboard.sort((a, b) => a.time - b.time);
+                
+                // Keep only top 10 scores
+                leaderboard = leaderboard.slice(0, 10);
+                
+                // Save to localStorage
+                localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+                
+                // Display entries
+                leaderboard.forEach((entry, index) => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'leaderboard-entry';
+                    entryElement.innerHTML = `
+                        <span class="leaderboard-rank">#${index + 1}</span>
+                        <span class="leaderboard-name">${entry.name}</span>
+                        <span class="leaderboard-time">${formatTime(entry.time)}</span>
+                    `;
+                    leaderboardList.appendChild(entryElement);
+                });
+            }
+            
+            // Show initial leaderboard
+            updateLeaderboard();
+
+            // Add keyboard support for name input
+            playerNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveScoreButton.click();
                 }
             });
         });
