@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A26Z Game | Merlin AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Game-specific styles */
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .games-page {
+            height: calc(100vh - 50px);
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            height: 100%;
+        }
+
+        .game-container {
+            display: flex;
+            height: 100%;
+            padding-top: 1.5rem;
+        }
+
+        .game-grid-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            padding-right: 1rem;
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            min-height: 100px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .stat-box {
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            max-width: 120px;
+            background-color: #444;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-input-container {
+            margin: 0.75rem 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .game-input {
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 220px;
+            text-align: center;
+            font-size: 1rem;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            background-color: #222;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .game-grid-container {
+            flex: 1;
+            background: #222;
+            border-radius: 8px;
+            padding: 0.75rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-height: calc(100vh - 350px);
+            min-height: 400px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 4px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+
+        .game-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #555;
+            border-radius: 4px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            user-select: none;
+        }
+
+        .game-cell.completed {
+            background-color: #2ecc71;
+            color: #111;
+        }
+
+        .game-controls {
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .leaderboard {
+            flex: 1;
+            background-color: #444;
+            border-radius: 8px;
+            padding: 0.75rem;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .leaderboard h2 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.2rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .leaderboard-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background-color: #333;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .leaderboard-rank {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #007bff;
+            width: 25px;
+        }
+
+        .leaderboard-name {
+            flex-grow: 1;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .leaderboard-time {
+            font-family: monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">A26Z Game</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="games.html">Games</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="games-page">
+            <div class="container">
+                <div class="game-container">
+                    <div class="game-grid-section">
+                        <div class="game-info">
+                            <div class="game-stats">
+                                <div class="stat-box">
+                                    <div class="stat-label">Time</div>
+                                    <div class="stat-value" id="time-display">00:00</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Next Letter</div>
+                                    <div class="stat-value" id="current-letter">A</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Best Time</div>
+                                    <div class="stat-value" id="best-time">--:--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="game-input-container">
+                                <input type="text" id="game-input" class="game-input" placeholder="Type any letter..." autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="game-grid-container">
+                            <div class="game-grid" id="game-grid">
+                                <!-- Grid cells will be generated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="game-controls">
+                            <button id="reset-button" class="btn">Reset Game</button>
+                            <a href="games.html" class="btn">Back to Games</a>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard">
+                        <h2>Leaderboard</h2>
+                        <div class="leaderboard-list" id="leaderboard-list">
+                            <!-- Leaderboard entries will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameGrid = document.getElementById('game-grid');
+            const gameInput = document.getElementById('game-input');
+            const currentLetterDisplay = document.getElementById('current-letter');
+            const timeDisplay = document.getElementById('time-display');
+            const bestTimeDisplay = document.getElementById('best-time');
+            const resetButton = document.getElementById('reset-button');
+            const leaderboardList = document.getElementById('leaderboard-list');
+            
+            let currentLetter = 'A';
+            let startTime = null;
+            let timerInterval = null;
+            let bestTime = localStorage.getItem('bestTime') || null;
+            let completedLetters = new Set();
+            
+            // Load leaderboard from localStorage
+            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            
+            if (bestTime) {
+                bestTimeDisplay.textContent = formatTime(bestTime);
+            }
+            
+            // Create the grid cells
+            for (let i = 0; i < 26; i++) {
+                const letter = String.fromCharCode(65 + i); // A-Z
+                const cell = document.createElement('div');
+                cell.className = 'game-cell';
+                cell.textContent = letter;
+                cell.id = `cell-${letter}`;
+                
+                gameGrid.appendChild(cell);
+            }
+            
+            // Handle key events for the input field
+            gameInput.addEventListener('keydown', (e) => {
+                // Start the timer on first keypress
+                if (!startTime) {
+                    startTime = Date.now();
+                    timerInterval = setInterval(updateTimer, 100);
+                }
+                
+                // If Enter key is pressed, process the input
+                if (e.key === 'Enter') {
+                    processInput();
+                    e.preventDefault();
+                }
+            });
+            
+            // Process the current input value
+            function processInput() {
+                const input = gameInput.value.trim().toUpperCase();
+                
+                // Check if the input is a valid letter
+                if (input.length === 1 && /^[A-Z]$/.test(input)) {
+                    // If the letter hasn't been completed yet
+                    if (!completedLetters.has(input)) {
+                        // Mark the letter as completed
+                        markLetterAsCompleted(input);
+                        
+                        // If this was the current letter, find the next one
+                        if (input === currentLetter) {
+                            findNextAvailableLetter();
+                        }
+                        
+                        // Clear the input field
+                        gameInput.value = '';
+                    }
+                }
+            }
+            
+            function markLetterAsCompleted(letter) {
+                // Mark the cell as completed
+                const cell = document.getElementById(`cell-${letter}`);
+                cell.classList.add('completed');
+                
+                // Add to completed set
+                completedLetters.add(letter);
+                
+                // Check if the game is complete
+                if (completedLetters.size === 26) {
+                    finishGame();
+                }
+            }
+            
+            function findNextAvailableLetter() {
+                // Find the next letter that hasn't been completed
+                while (completedLetters.has(currentLetter) && currentLetter <= 'Z') {
+                    currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+                }
+                
+                // Update the display
+                currentLetterDisplay.textContent = currentLetter <= 'Z' ? currentLetter : 'Done!';
+            }
+            
+            // Reset the game
+            resetButton.addEventListener('click', resetGame);
+            
+            function updateTimer() {
+                if (!startTime) return;
+                
+                const elapsedTime = Date.now() - startTime;
+                timeDisplay.textContent = formatTime(elapsedTime);
+            }
+            
+            function formatTime(ms) {
+                const totalSeconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function finishGame() {
+                clearInterval(timerInterval);
+                
+                const finalTime = Date.now() - startTime;
+                
+                // Check if this is a new best time
+                if (!bestTime || finalTime < bestTime) {
+                    bestTime = finalTime;
+                    localStorage.setItem('bestTime', bestTime);
+                    bestTimeDisplay.textContent = formatTime(bestTime);
+                }
+                
+                // Disable the input
+                gameInput.disabled = true;
+                
+                // Check if the score qualifies for the leaderboard
+                const shouldAddToLeaderboard = leaderboard.length < 10 || finalTime < leaderboard[9].time;
+                
+                if (shouldAddToLeaderboard) {
+                    // Show name input
+                    const playerName = prompt("New High Score! Enter your name to save your score:");
+                    if (playerName) {
+                        // Add to leaderboard
+                        leaderboard.push({
+                            name: playerName,
+                            time: finalTime
+                        });
+                        
+                        // Update display
+                        updateLeaderboard();
+                    }
+                } else {
+                    // Just show completion message
+                    setTimeout(() => {
+                        alert(`Congratulations! You completed the challenge in ${formatTime(finalTime)}!`);
+                    }, 100);
+                }
+            }
+            
+            function resetGame() {
+                // Reset the timer
+                clearInterval(timerInterval);
+                startTime = null;
+                timeDisplay.textContent = '00:00';
+                
+                // Reset the current letter and completed set
+                currentLetter = 'A';
+                completedLetters.clear();
+                currentLetterDisplay.textContent = currentLetter;
+                
+                // Clear the input
+                gameInput.value = '';
+                gameInput.disabled = false;
+                gameInput.focus();
+                
+                // Reset all cells
+                document.querySelectorAll('.game-cell').forEach(cell => {
+                    cell.classList.remove('completed');
+                });
+            }
+            
+            // Update leaderboard display
+            function updateLeaderboard() {
+                leaderboardList.innerHTML = '';
+                
+                // Sort by time (ascending)
+                leaderboard.sort((a, b) => a.time - b.time);
+                
+                // Keep only top 10 scores
+                leaderboard = leaderboard.slice(0, 10);
+                
+                // Save to localStorage
+                localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+                
+                // Display entries
+                leaderboard.forEach((entry, index) => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'leaderboard-entry';
+                    entryElement.innerHTML = `
+                        <span class="leaderboard-rank">#${index + 1}</span>
+                        <span class="leaderboard-name">${entry.name}</span>
+                        <span class="leaderboard-time">${formatTime(entry.time)}</span>
+                    `;
+                    leaderboardList.appendChild(entryElement);
+                });
+            }
+            
+            // Show initial leaderboard
+            updateLeaderboard();
+        });
+    </script>
+</body>
+</html> 
