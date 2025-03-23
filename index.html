@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-100 Number Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #222;
+            color: #fff;
+        }
+        .game-container {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .game-description {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        .stat-box {
+            background-color: #222;
+            border-radius: 5px;
+            padding: 10px 15px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #444;
+            border-radius: 4px;
+            margin: 5px 0 15px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .input-area {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        #number-input {
+            flex-grow: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: #444;
+            color: #fff;
+        }
+        #number-input::placeholder {
+            color: #999;
+        }
+        #submit-btn {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #submit-btn:hover {
+            background-color: #45a049;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .number-cell {
+            background-color: #444;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: clamp(12px, 2vw, 16px);
+        }
+        .found {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #restart-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #restart-btn:hover {
+            background-color: #d32f2f;
+        }
+        #back-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        #back-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        /* Leaderboard styles */
+        .leaderboard {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .leaderboard h2 {
+            color: #fff;
+            text-align: center;
+            margin-top: 0;
+        }
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+        .leaderboard-rank {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .stats-container {
+                flex-direction: column;
+            }
+            .number-cell {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>1-100 Number Quiz</h1>
+        <p class="game-description">Can you enter all numbers from 1 to 100?</p>
+        
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-label">Time</span>
+                <span class="stat-value" id="timer">00:00</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Next Number</span>
+                <span class="stat-value" id="found-count">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Best Time</span>
+                <span class="stat-value" id="best-time">--:--</span>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="input-area">
+            <input type="number" id="number-input" placeholder="Enter a number..." autofocus>
+            <button id="submit-btn">Submit</button>
+        </div>
+        
+        <div class="grid-container" id="number-grid"></div>
+        
+        <div class="game-controls">
+            <button id="restart-btn">Restart Game</button>
+            <button id="back-btn">Back to Games</button>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let foundNumbers = new Set();
+        let startTime = null;
+        let timerInterval = null;
+        let inputBuffer = "";
+        let lastKeyTime = 0;
+        let bestTime = localStorage.getItem('bestTime') || null;
+        
+        // DOM elements
+        const numberInput = document.getElementById('number-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const backBtn = document.getElementById('back-btn');
+        const timerElement = document.getElementById('timer');
+        const foundCountElement = document.getElementById('found-count');
+        const bestTimeElement = document.getElementById('best-time');
+        const numberGrid = document.getElementById('number-grid');
+        const progressBar = document.getElementById('progress');
+        
+        // Display best time if available
+        if (bestTime) {
+            bestTimeElement.textContent = bestTime;
+        }
+        
+        // Initialize the grid
+        function initializeGrid() {
+            numberGrid.innerHTML = '';
+            for (let i = 1; i <= 100; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'number-cell';
+                cell.id = `cell-${i}`;
+                cell.textContent = i;
+                numberGrid.appendChild(cell);
+            }
+        }
+        
+        // Try to find a number
+        function findNumber(number) {
+            // Start the timer on first input
+            if (!startTime) {
+                startTime = new Date();
+                startTimer();
+            }
+            
+            // If number is valid and not already found
+            if (number >= 1 && number <= 100 && !foundNumbers.has(number)) {
+                // Mark number as found
+                foundNumbers.add(number);
+                const cell = document.getElementById(`cell-${number}`);
+                cell.textContent = number;
+                cell.classList.add('found');
+                
+                // Update found count
+                foundCountElement.textContent = foundNumbers.size + 1 <= 100 ? foundNumbers.size + 1 : 'Done!';
+                
+                // Update progress bar
+                progressBar.style.width = `${foundNumbers.size}%`;
+                
+                // Check if all numbers are found
+                if (foundNumbers.size === 100) {
+                    clearInterval(timerInterval);
+                    const finalTime = timerElement.textContent;
+                    
+                    // Update best time if this is better or first time
+                    if (!bestTime || compareTimes(finalTime, bestTime)) {
+                        bestTime = finalTime;
+                        localStorage.setItem('bestTime', bestTime);
+                        bestTimeElement.textContent = bestTime;
+                    }
+                    
+                    setTimeout(() => {
+                        alert(`Congratulations! You found all numbers in ${finalTime}!`);
+                    }, 100);
+                    
+                    foundCountElement.textContent = 'Done!';
+                }
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Compare two time strings (mm:ss format)
+        function compareTimes(time1, time2) {
+            const [min1, sec1] = time1.split(':').map(Number);
+            const [min2, sec2] = time2.split(':').map(Number);
+            
+            return (min1 * 60 + sec1) < (min2 * 60 + sec2);
+        }
+        
+        // Timer function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Restart game
+        function restartGame() {
+            foundNumbers.clear();
+            startTime = null;
+            clearInterval(timerInterval);
+            timerElement.textContent = '00:00';
+            foundCountElement.textContent = '1';
+            progressBar.style.width = '0%';
+            initializeGrid();
+            numberInput.value = '';
+            inputBuffer = "";
+            numberInput.focus();
+        }
+        
+        // Event listeners
+        submitBtn.addEventListener('click', () => {
+            const num = parseInt(numberInput.value);
+            if (!isNaN(num)) {
+                findNumber(num);
+                numberInput.value = '';
+                inputBuffer = "";
+            }
+        });
+        
+        restartBtn.addEventListener('click', restartGame);
+        
+        backBtn.addEventListener('click', () => {
+            // Navigate back to games list
+            window.location.href = '/games';
+        });
+        
+        // Key handling
+        numberInput.addEventListener('keydown', (e) => {
+            // Don't use the default input behavior
+            e.preventDefault();
+            
+            const key = e.key;
+            const now = Date.now();
+            
+            // Process digit keys
+            if (/^\d$/.test(key)) {
+                // For speed, immediately try the single digit first
+                const singleDigit = parseInt(key);
+                if (findNumber(singleDigit)) {
+                    // If the single digit worked, clear any buffer
+                    inputBuffer = "";
+                } else {
+                    // If single digit didn't work, append to buffer and try that
+                    inputBuffer += key;
+                    const bufferNumber = parseInt(inputBuffer);
+                    
+                    if (findNumber(bufferNumber)) {
+                        // If the buffer number worked, clear it
+                        inputBuffer = "";
+                    }
+                    
+                    // Keep the buffer visible in the input
+                    numberInput.value = inputBuffer;
+                    
+                    // Reset buffer if it gets too long
+                    if (inputBuffer.length > 3) {
+                        inputBuffer = key;
+                        numberInput.value = inputBuffer;
+                    }
+                }
+            }
+            // Clear with Escape or Enter
+            else if (key === 'Escape' || key === 'Enter') {
+                inputBuffer = "";
+                numberInput.value = "";
+            }
+            // Handle backspace
+            else if (key === 'Backspace') {
+                inputBuffer = inputBuffer.slice(0, -1);
+                numberInput.value = inputBuffer;
+            }
+            
+            lastKeyTime = now;
+        });
+        
+        // Initialize game
+        initializeGrid();
+    </script>
+</body>
+</html>
