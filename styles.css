@@ -339,42 +339,31 @@ nav {
     max-width: 500px;
     width: 100%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .project-card:hover {
     transform: translateY(-10px);
 }
 
-.project-image {
-    width: 100%;
-    height: 240px;
-    background-color: #111;
-    position: relative;
-    overflow: hidden;
-}
-
-.placeholder {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #111 0%, #333 100%);
-}
-
-.placeholder::after {
-    content: 'Coming Soon';
-    color: var(--text-secondary);
-    font-size: 1.2rem;
-    letter-spacing: 0.1em;
+.project-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
 }
 
 .project-card p {
     padding: 0 1.5rem;
     color: var(--text-secondary);
     font-size: 0.95rem;
+    margin-bottom: 2rem;
+    flex-grow: 1;
 }
 
 .project-card .btn {
-    margin-top: 1rem;
+    margin-top: auto;
     align-self: center;
 }
 
@@ -658,8 +647,10 @@ body::before {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
+    align-items: center;
     max-width: 400px;
     width: 100%;
+    text-align: center;
 }
 
 .game-card:hover {
@@ -667,37 +658,14 @@ body::before {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.game-image {
-    width: 100%;
-    height: 200px;
-    background-color: var(--dark-color);
-    border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
-}
-
-.game-image.placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--dark-color), var(--mid-color));
-}
-
 .game-card h3 {
     font-size: 1.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-weight: 600;
 }
 
-.game-card p {
-    margin-bottom: 1.5rem;
-    color: var(--text-secondary);
-    flex-grow: 1;
-}
-
-.btn-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    align-self: flex-start;
+.game-card .btn {
+    margin-top: auto;
 }
 
 @media (min-width: 768px) {
