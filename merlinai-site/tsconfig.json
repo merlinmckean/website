@@ -1,0 +1,44 @@
+// tsconfig.json
+{
+  "compilerOptions": {
+    // ... other options like target, lib, jsx, etc. should already be here
+    "baseUrl": ".", // Tells TypeScript the base directory for path resolution
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ] // Maps @/ to the src/ directory
+    },
+    // ... ensure other essential options like moduleResolution, esModuleInterop, etc. are present
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true, // Or false depending on your preference
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler", // Or "node" depending on your Next version/setup
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "target": "ES2017"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
