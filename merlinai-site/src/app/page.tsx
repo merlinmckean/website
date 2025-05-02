@@ -1,6 +1,3 @@
-// src/app/page.tsx
-import Link from 'next/link'; // Import if you need internal links
-
 export default function HomePage() {
   return (
     // The hero section content goes here
