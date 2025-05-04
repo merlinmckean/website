@@ -10,14 +10,10 @@ export default function Navbar() {
         </Link>
         <nav className="main-nav">
           <ul>
-            {/* Use <a> for hash links if sections are on the homepage */}
-            <li><a href="#services">Services</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            {/* If these were separate pages, use <Link>:
             <li><Link href="/services">Services</Link></li>
-             */}
+            <li><Link href="/how-it-works">How It Works</Link></li>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </nav>
         {/* Optional: Add a smaller CTA button here if desired */}
