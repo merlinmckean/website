@@ -1,24 +1,13 @@
-// src/components/ui/Navbar.tsx
-import Link from 'next/link';
+import * as React from 'react';
 
 export default function Navbar() {
   return (
-    <header className="site-header">
-      <div className="container">
-        <Link href="/" className="logo">
-          Merlin AI
-        </Link>
-        <nav className="main-nav">
-          <ul>
-            <li><Link href="/services">Services</Link></li>
-            <li><Link href="/how-it-works">How It Works</Link></li>
-            <li><Link href="/about">About</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-          </ul>
-        </nav>
-        {/* Optional: Add a smaller CTA button here if desired */}
-        {/* <a href="#contact-form" className="cta-button small-cta">Book Now</a> */}
+    <nav className="w-full bg-blue-700 text-white p-4 flex justify-between items-center">
+      <div className="font-bold text-xl">Merlin AI</div>
+      <div>
+        <a href="/" className="mr-6 hover:underline">Home</a>
+        <a href="/contact" className="hover:underline">Contact</a>
       </div>
-    </header>
+    </nav>
   );
 }

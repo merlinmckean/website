@@ -1,14 +1,9 @@
+import * as React from 'react';
+
 export default function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="container">
-        {/* Use JS to get the current year dynamically */}
-        <p>© {new Date().getFullYear()} Merlin AI. All Rights Reserved.</p>
-        <nav className="footer-nav">
-           {/* Example if you add Privacy/Terms pages later */}
-           {/* <Link href="/privacy">Privacy Policy</Link> | <Link href="/terms">Terms of Service</Link> */}
-        </nav>
-      </div>
+    <footer className="w-full bg-gray-100 text-gray-600 p-4 text-center mt-10">
+      &copy; {new Date().getFullYear()} Merlin AI. All rights reserved.
     </footer>
   );
 }
