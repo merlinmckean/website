@@ -2,7 +2,8 @@ import * as React from 'react';
 
 export default function Navbar() {
   return (
-<nav className="w-full bg-white border-b border-gray-200 px-8 py-4 shadow-sm">
+<nav className="w-full bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center shadow-sm border-red-500">
+
   <div className="max-w-screen-xl mx-auto flex justify-between items-center">
     <div className="font-bold text-2xl text-blue-700 tracking-tight">Merlin AI</div>
     <div className="flex space-x-8 text-lg font-medium">
